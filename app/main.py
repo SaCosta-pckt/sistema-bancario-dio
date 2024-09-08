@@ -1,3 +1,5 @@
+from datetime import datetime
+
 menu = """
 O que deseja fazer?
 Digite o número correspondente à escolha.
@@ -25,7 +27,8 @@ def depositar ():
 
         if valor > 0:
             saldo += valor
-            extrato += f"Depósito: R$ {valor:.2f}\n"
+            datahora = datetime.today().strftime("%d/%m/%Y %H:%M")
+            extrato += f"{datahora}  Depósito: R$ {valor:.2f}\n"
             return (f"Operação realizada com sucesso! Saldo atual: {saldo:.2f}")
 
         else:
@@ -48,7 +51,8 @@ def sacar ():
 
         elif valor > 0:
             saldo -= valor
-            extrato += f"Saque: R$ {valor:.2f}\n"
+            datahora = datetime.today().strftime("%d/%m/%Y %H:%M")
+            extrato += f"{datahora}  Saque: R$ {valor:.2f}\n"
             numero_saques += 1
 
             return (f"Operação realizada com sucesso! Saldo atual: {saldo:.2f}")
