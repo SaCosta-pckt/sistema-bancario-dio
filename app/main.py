@@ -7,8 +7,9 @@ Digite o número correspondente à escolha.
 [1] Depositar
 [2] Sacar
 [3] Extrato
-[4] Sair
-
+[4] Cadastrar cliente
+[5] Criar conta
+[6] Sair
 => """
 
 saldo = 0
@@ -16,10 +17,87 @@ limite = 500
 extrato = ""
 numero_saques = 0
 LIMITE_SAQUES = 3
+clientes = []
+contas = []
 
 
 
 # Use Cases
+def criar_cliente():
+    global clientes
+    
+    cpf = input("Digite o CPF(apenas números): ")
+    #pesquisa o cpf digitado já existe na base
+    pesquisa_cliente = list(filter(lambda cliente: cliente['cpf'] == cpf, clientes))
+
+    if pesquisa_cliente:
+        return "[ERRO] Este CPF já foi cadastrado!"
+    
+    nome = input("Digite o nome completo: ")
+    data_nascimento = input("Digite a data de nascimento: ")
+    endereco = input("Digite o endereco: ")
+    telefone = int(input("Digite o telefone: "))
+
+    clientes.append(
+        {
+            'nome': nome,
+            'cpf': cpf,
+            'endereco': endereco,
+            'data_nascimento': data_nascimento,
+            'telefone': telefone
+        } 
+    )
+
+    return("Cliente cadastrado com sucesso!")
+
+def criar_conta():
+    global contas
+    global clientes
+
+    cpf = input("Informe o CPF do usuário(apenas números): ")
+    pesquisa_cliente = list(filter(lambda cliente: cliente['cpf'] == cpf, clientes))
+
+    if pesquisa_cliente:
+        agencia = 0001
+        numero_conta = int(input("Digite o telefone: "))
+        
+        contas.append(
+            {
+                'conta': numero_conta,
+                'agencia': agencia,
+                'cpf_cliente': cpf
+            }
+        )
+
+        return f"""
+        
+        Usuário cadastrado com sucesso!
+
+        Conta: {numero_conta}
+        Agencia: {agencia}
+        Usuário: {pesquisa_cliente['nome']}
+
+        """
+    else:
+         return "[ERRO] Não foi encontrado um cliente com este CPF!"
+         
+def listar_contas():
+    global contas
+    texto_retorno = "Contas encontradas:"
+
+    cpf = input("Informe o CPF do usuário(apenas números): ")
+    pesquisa_contas = list(filter(lambda conta: conta['cpf'] == cpf, contas))
+
+    for conta in pesquisa_contas:
+        texto_retorno += f"""\n
+
+        Conta: {conta['conta']}
+        Agencia: {conta['agencia']}
+        CPF: {conta['cpf_cliente']}
+
+        """
+    return texto_retorno
+
 def depositar ():
         global saldo
         global extrato
@@ -32,7 +110,7 @@ def depositar ():
             return (f"Operação realizada com sucesso! Saldo atual: {saldo:.2f}")
 
         else:
-            return("Operação falhou! O valor informado é inválido.")
+            return("[ERRO] Operação falhou! O valor informado é inválido.")
 
 def sacar ():
         global saldo
@@ -41,13 +119,13 @@ def sacar ():
         valor = float(input("Informe o valor do saque: "))
 
         if valor > saldo:
-            return ("Operação falhou! Você não tem saldo suficiente.")
+            return ("[ERRO] Operação falhou! Você não tem saldo suficiente.")
 
         elif valor > limite:
-            return ("Operação falhou! O valor do saque excede o limite.")
+            return ("[ERRO] Operação falhou! O valor do saque excede o limite.")
 
         elif numero_saques >= LIMITE_SAQUES:
-            return ("Operação falhou! Número máximo de saques excedido.")
+            return ("[ERRO] Operação falhou! Número máximo de saques excedido.")
 
         elif valor > 0:
             saldo -= valor
@@ -58,7 +136,7 @@ def sacar ():
             return (f"Operação realizada com sucesso! Saldo atual: {saldo:.2f}")
 
         else:
-            return("Operação falhou! O valor informado é inválido.")
+            return("[ERRO] Operação falhou! O valor informado é inválido.")
 
 def exibir_extrato():
          # Se houver valor em extrato -> mostra | se não -> mensagem alternativa
@@ -79,7 +157,7 @@ def switch_case(value):
     }
     
     # Retorna a função correspondente ou uma função padrão para valores não definidos
-    return opcoes.get(value, lambda: "Operação inválida, por favor selecione novamente a operação desejada.")()
+    return opcoes.get(value, lambda: "[ERRO] Operação inválida, por favor selecione novamente a operação desejada.")()
 
 while True:
     valor_escolha = input(menu)
