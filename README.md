@@ -9,3 +9,6 @@ Contruir um programa que permita ao usuário:
 - Sacar
 - Extrato
 - Sair
+- Criar cliente/usuário
+- Criar contas para os cliente
+- Listar contas
