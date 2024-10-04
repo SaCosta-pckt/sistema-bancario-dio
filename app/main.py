@@ -9,7 +9,8 @@ Digite o número correspondente à escolha.
 [3] Extrato
 [4] Cadastrar cliente
 [5] Criar conta
-[6] Sair
+[6] Listar contas
+[7] Sair
 => """
 
 saldo = 0
@@ -58,8 +59,8 @@ def criar_conta():
     pesquisa_cliente = list(filter(lambda cliente: cliente['cpf'] == cpf, clientes))
 
     if pesquisa_cliente:
-        agencia = 0001
-        numero_conta = int(input("Digite o telefone: "))
+        agencia = "0001"
+        numero_conta = int(input("Digite o numero da conta: "))
         
         contas.append(
             {
@@ -68,35 +69,38 @@ def criar_conta():
                 'cpf_cliente': cpf
             }
         )
-
-        return f"""
+        print("Deu append!")
+        return (f"""
         
-        Usuário cadastrado com sucesso!
+        \nUsuário cadastrado com sucesso!
 
         Conta: {numero_conta}
         Agencia: {agencia}
-        Usuário: {pesquisa_cliente['nome']}
+        Usuário: {pesquisa_cliente[0]['nome']}
 
-        """
+        """)
     else:
-         return "[ERRO] Não foi encontrado um cliente com este CPF!"
+        return "[ERRO] Não foi encontrado um cliente com este CPF!"
          
 def listar_contas():
     global contas
     texto_retorno = "Contas encontradas:"
 
     cpf = input("Informe o CPF do usuário(apenas números): ")
-    pesquisa_contas = list(filter(lambda conta: conta['cpf'] == cpf, contas))
+    pesquisa_contas = list(filter(lambda conta: conta['cpf_cliente'] == cpf, contas))
 
-    for conta in pesquisa_contas:
-        texto_retorno += f"""\n
+    if pesquisa_contas:
+        for conta in pesquisa_contas:
+            texto_retorno += f"""\n
 
-        Conta: {conta['conta']}
-        Agencia: {conta['agencia']}
-        CPF: {conta['cpf_cliente']}
+            Conta: {conta['conta']}
+            Agencia: {conta['agencia']}
+            CPF: {conta['cpf_cliente']}
 
-        """
-    return texto_retorno
+            """
+        return texto_retorno
+    else:
+        return "[ERRO] Não foi encontrada uma conta com este CPF!"
 
 def depositar ():
         global saldo
@@ -153,7 +157,10 @@ def switch_case(value):
     opcoes = {
         '1': depositar,
         '2': sacar,
-        '3': exibir_extrato
+        '3': exibir_extrato,
+        '4': criar_cliente,
+        '5': criar_conta,
+        '6': listar_contas
     }
     
     # Retorna a função correspondente ou uma função padrão para valores não definidos
@@ -161,6 +168,6 @@ def switch_case(value):
 
 while True:
     valor_escolha = input(menu)
-    if(valor_escolha == '4'): break
+    if(valor_escolha == '7'): break
     mensagem = switch_case(valor_escolha)
     print(mensagem)
